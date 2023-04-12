@@ -34,7 +34,7 @@ public class CarController : MonoBehaviour
     {
         get
         {
-            return speed * currSpeedMult;
+            return speed * (currSpeedMult+boostGroundMultiplier);
         }
     }
 
@@ -48,6 +48,7 @@ public class CarController : MonoBehaviour
     [Header("Gameplay Variables")]
     public float speed = 0;
     public float groundSpeedMultiplier = 1;
+    public float boostGroundMultiplier = 0;
     float currSpeedMult = 1;
     public Vector3 gravityDirection = Vector3.up;
     public float gravityIntensity = -1;
@@ -55,6 +56,8 @@ public class CarController : MonoBehaviour
     public bool isAccelerating = false;
 
     public bool canChangeRotation = false;
+
+    public bool canGroundBoost = true;
 
     public void ToggleRotation(bool b)
     {
@@ -88,6 +91,7 @@ public class CarController : MonoBehaviour
 
         //Inputs
 
+        /*This is the old input system, back when hitting an obstacle made you stop accelerating
         if (Input.GetButtonDown("Fire1"))
         {
             isAccelerating = true;
@@ -95,7 +99,8 @@ public class CarController : MonoBehaviour
         if (Input.GetButtonUp("Fire1"))
         {
             isAccelerating = false;
-        }
+        }*/
+        isAccelerating = Input.GetButton("Fire1");
 
         //speed = transform.InverseTransformDirection(rb.velocity).z;
 
@@ -168,8 +173,18 @@ public class CarController : MonoBehaviour
             {
                 groundSpeedMultiplier = 1;
             }
+
+            if (material.name.ToLower().Contains("boost") && canGroundBoost)
+            {
+                boostGroundMultiplier = 1;
+                canGroundBoost = false;
+            } else
+            {
+                canGroundBoost = true;
+            }
         }
         currSpeedMult = Mathf.Lerp(currSpeedMult, groundSpeedMultiplier, Time.deltaTime * 3);
+        boostGroundMultiplier = Mathf.Lerp(boostGroundMultiplier, 0, Time.deltaTime * 0.5f);
 
         //Debug.Log($"Material: {(material!=null?material.name:"Null")}");
 
@@ -271,10 +286,6 @@ private void OnCollisionEnter(Collision collision)
         {
             speed *= -0.25f;
             rb.MovePosition(transform.position+transform.TransformDirection(-Vector3.forward));
-            if (Physics.Raycast(transform.position, transform.forward, 4))
-            {
-                isAccelerating = false;
-            }
         }
     }
 
