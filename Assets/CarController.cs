@@ -18,7 +18,7 @@ public class CarController : MonoBehaviour
     {
         get
         {
-            return baseRotation + (25 * handlingStat);
+            return baseRotation + (25 * handlingStat) * (isDrifting?2:1);
         }
     }
 
@@ -43,6 +43,7 @@ public class CarController : MonoBehaviour
     public GameObject shipModel;
     public GameObject gravityAligner;
     public GameObject cameraAligner;
+    public GameObject shipDisplay;
     public Camera camera;
 
     [Header("Gameplay Variables")]
@@ -54,7 +55,10 @@ public class CarController : MonoBehaviour
     public float gravityIntensity = -1;
 
     public bool isAccelerating = false;
-
+    public bool isDrifting = false;
+    public bool isGrounded = true;
+    public bool driftingCanEnd = true;
+    public float driftAngle = 0;
     public bool canChangeRotation = false;
 
     public bool canGroundBoost = true;
@@ -77,12 +81,14 @@ public class CarController : MonoBehaviour
         Application.targetFrameRate = 60;
     }
     float rotation = 0;
-    
+    float turnDir = 0;
     // Update is called once per frame
     void Update()
     {
 
         float fac = (1 + speed / maxSpeed);
+
+        isGrounded = Physics.Raycast(transform.position, -gravityDirection, height * fac * 2f, groundedLayerMask);
         bool hittingForward = Physics.Raycast(transform.position, transform.forward, 50 * (speed / maxSpeed));
         if (hittingForward)
         {
@@ -91,16 +97,52 @@ public class CarController : MonoBehaviour
 
         //Inputs
 
-        /*This is the old input system, back when hitting an obstacle made you stop accelerating
-        if (Input.GetButtonDown("Fire1"))
-        {
-            isAccelerating = true;
-        }
-        if (Input.GetButtonUp("Fire1"))
-        {
-            isAccelerating = false;
-        }*/
         isAccelerating = Input.GetButton("Fire1");
+        float h = Input.GetAxis("Horizontal");
+
+        //Drifting
+
+        if (Input.GetButtonDown("Fire2") && Mathf.Abs(h)>0.3f)
+        {
+            isDrifting = true;
+            driftingCanEnd = false;
+            if (h > 0)
+            {
+                driftAngle = 1;
+            } else
+            {
+                driftAngle = -1;
+            }
+            //turnDir = driftAngle * 1.5f;
+        }
+        if (Input.GetButtonUp("Fire2") && isDrifting)
+        {
+            driftingCanEnd = true;
+        }
+
+        if (isDrifting)
+        {
+            float f = (h * (3f + 0.5f * handlingStat))*driftAngle;
+            if (f < 0)
+            {
+                f *= 0.75f;
+            }
+            if (Mathf.Abs(h)< 0.2f)
+            {
+                f = driftAngle*2;
+            }
+            if (driftAngle > 0)
+            {
+                turnDir = Mathf.Clamp(turnDir + f * Time.deltaTime, 0.5f, 2.5f);
+            } else
+            {
+                turnDir = Mathf.Clamp(turnDir + f * Time.deltaTime, -2.5f, -0.5f);
+            }
+        } else
+        {
+            turnDir = h;
+        }
+
 
         //speed = transform.InverseTransformDirection(rb.velocity).z;
 
@@ -130,18 +172,24 @@ public class CarController : MonoBehaviour
         //Rotation
         //
         //
-        float h = Input.GetAxis("Horizontal");
-        if (Mathf.Abs(h) < 0.03f)
+
+        //turnSpeed = Mathf.Lerp(turnSpeed,isDrifting?0.1f:1,Time.deltaTime* (isDrifting?0.5f:6));
+        
+        if ((!isDrifting&& Mathf.Abs(h) < 0.03f) ||driftingCanEnd)
         {
-            rotation  = Mathf.Lerp(rotation,0,Time.deltaTime*6);
+            rotation  = Mathf.Lerp(rotation,0,Time.deltaTime*10*(isDrifting?2:1));
             if (Mathf.Abs(rotation)<0.5f)
             {
                 rotation = 0;
             }
+            if (driftingCanEnd && Mathf.Abs(rotation)<20)
+            {
+                isDrifting = false;
+                driftingCanEnd = false;
+            }
         } else
         {
-            //rotation += h * Time.deltaTime * baseRotation*6;
-            rotation = Mathf.Clamp(h*maxRotation * (Physics.Raycast(transform.position, -gravityDirection, height * fac * 2f, groundedLayerMask)?1:0.25f), -maxRotation, maxRotation);
+            rotation = Mathf.Clamp(turnDir*maxRotation * (isGrounded?1:0.25f), -maxRotation*(isDrifting?2:1), maxRotation * (isDrifting ? 2 : 1));
         }
         //totalRotation += rotation * Time.deltaTime;
         //if (totalRotation>720*7)
@@ -184,7 +232,7 @@ public class CarController : MonoBehaviour
             }
         }
         currSpeedMult = Mathf.Lerp(currSpeedMult, groundSpeedMultiplier, Time.deltaTime * 3);
-        boostGroundMultiplier = Mathf.Lerp(boostGroundMultiplier, 0, Time.deltaTime * 0.5f);
+        boostGroundMultiplier = Mathf.Lerp(boostGroundMultiplier, 0, Time.deltaTime);
 
         //Debug.Log($"Material: {(material!=null?material.name:"Null")}");
 
@@ -237,7 +285,8 @@ public class CarController : MonoBehaviour
         //
         //
 
-        camera.fieldOfView = Mathf.Clamp(Mathf.LerpUnclamped(40, 70, finalSpeed / maxSpeed),30,90);
+        camera.fieldOfView = Mathf.Clamp(Mathf.LerpUnclamped(40, 70, Mathf.Log((finalSpeed / maxSpeed)+1, 2)),30,120);
+        shipDisplay.transform.localEulerAngles = new Vector3(0, h*8 * (isDrifting ? 1.5f : 1), h*-15 * (isDrifting ? 0.5f : 1));
 
         //Final Movement Stuff
         //
@@ -285,7 +334,7 @@ private void OnCollisionEnter(Collision collision)
         if (collision.collider.tag == "Obstacle")
         {
             speed *= -0.25f;
-            rb.MovePosition(transform.position+transform.TransformDirection(-Vector3.forward));
+            //rb.MovePosition(transform.position+transform.TransformDirection(-Vector3.forward));
         }
     }
 
