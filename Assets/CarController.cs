@@ -26,7 +26,7 @@ public class CarController : MonoBehaviour
     {
         get
         {
-            return 300 + (30 * speedStat);
+            return 400 + (30 * speedStat);
         }
     }
 
@@ -43,6 +43,7 @@ public class CarController : MonoBehaviour
     public GameObject shipModel;
     public GameObject gravityAligner;
     public GameObject cameraAligner;
+    public Camera camera;
 
     [Header("Gameplay Variables")]
     public float speed = 0;
@@ -70,7 +71,7 @@ public class CarController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        Application.targetFrameRate = 60;
     }
     float rotation = 0;
     
@@ -116,7 +117,7 @@ public class CarController : MonoBehaviour
             speed -= accelSpeed * 2 * Time.deltaTime;
         } else if (speed < 0)
         {
-            speed *= 0.9f;
+            speed *= Mathf.Lerp(speed, 0, Time.deltaTime * 4);
         }
 
         speed = Mathf.Clamp(speed, -maxSpeed, maxSpeed);
@@ -127,7 +128,7 @@ public class CarController : MonoBehaviour
         float h = Input.GetAxis("Horizontal");
         if (Mathf.Abs(h) < 0.03f)
         {
-            rotation *= 0.7f;
+            rotation  = Mathf.Lerp(rotation,0,Time.deltaTime*6);
             if (Mathf.Abs(rotation)<0.5f)
             {
                 rotation = 0;
@@ -185,7 +186,6 @@ public class CarController : MonoBehaviour
             {
                 gravityIntensity = 6 / (hit.distance/(height*fac));
             }
-            
         } else
         {
             //float mult = 1;
@@ -217,8 +217,14 @@ public class CarController : MonoBehaviour
             scaleSpeed = 8;
         }
         cameraAligner.transform.rotation = Quaternion.Lerp(cameraAligner.transform.rotation, shipModel.transform.rotation, Time.deltaTime * scaleSpeed);
-        //transform.up = Vector3.Lerp(transform.up, gravityDirection, Time.deltaTime * 8);
-        //Final
+
+        //VFX
+        //
+        //
+
+        camera.fieldOfView = Mathf.Clamp(Mathf.LerpUnclamped(40, 70, finalSpeed / maxSpeed),30,90);
+
+        //Final Movement Stuff
         //
         //
         Vector3 vector = shipModel.transform.TransformDirection(new Vector3(0, 0, finalSpeed));
