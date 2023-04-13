@@ -4,5 +4,14 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Main Menu.unity
+    guid: 990167bb5e8a72e42bd61564871c6870
+  - enabled: 1
+    path: Assets/Scenes/Select.unity
+    guid: ed83d3b7cf1b32c498856e1adb913b5d
+  - enabled: 1
+    path: Assets/Scenes/Gilded Cup 1.unity
+    guid: cabdeea042c28d7418e801e6a04ac078
   m_configObjects: {}

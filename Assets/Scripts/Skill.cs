@@ -12,7 +12,7 @@ public class Skill : MonoBehaviour
 
     public virtual bool CanFire()
     {
-        return car.health > healthCost;
+        return car.health > healthCost && car.lap>0;
     }
 
     public virtual bool CheckFire()

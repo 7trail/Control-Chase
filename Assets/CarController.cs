@@ -9,6 +9,7 @@ public class CarController : MonoBehaviour
     public int speedStat = 0;
     public int handlingStat = 0;
     public int skillStat = -1;
+    public float accelStat = 0;
     public float gravity = 24;
 
     public float height = 2;
@@ -28,7 +29,7 @@ public class CarController : MonoBehaviour
     {
         get
         {
-            return 400 + (30 * speedStat);
+            return 400 + (30 * speedStat) + (100*(1-accelValue));
         }
     }
 
@@ -37,6 +38,22 @@ public class CarController : MonoBehaviour
         get
         {
             return speed * (currSpeedMult+boostGroundMultiplier);
+        }
+    }
+
+    public float accelValue
+    {
+        get
+        {
+            return Mathf.Pow(1 - accelStat,1.75f);
+        }
+    }
+
+    public bool inJump
+    {
+        get
+        {
+            return Time.time < lastJumpTime+1;
         }
     }
 
@@ -55,6 +72,8 @@ public class CarController : MonoBehaviour
     public float speed = 0;
     public float groundSpeedMultiplier = 1;
     public float boostGroundMultiplier = 0;
+    public int lap = 0;
+    public int checkpointIndex = 0;
     float currSpeedMult = 1;
     public Vector3 gravityDirection = Vector3.up;
     public float gravityIntensity = -1;
@@ -69,6 +88,9 @@ public class CarController : MonoBehaviour
     public bool canChangeRotation = false;
 
     public bool canGroundBoost = true;
+    public bool isFinished;
+    public float startTime = 0;
+    public float finishTime = 0;
 
     public void ToggleRotation(bool b)
     {
@@ -130,7 +152,7 @@ public class CarController : MonoBehaviour
 
         //Drifting
 
-        if (Input.GetButton("Fire2") && !isDrifting && Mathf.Abs(h)>0.3f)
+        if (Input.GetButton("Fire2") && !isDrifting && Mathf.Abs(h)>0.3f && !isFinished)
         {
             isDrifting = true;
             driftingCanEnd = false;
@@ -177,19 +199,20 @@ public class CarController : MonoBehaviour
         //Acceleration
         //
         //
-        float accelSpeed = 200 + (20 * speedStat);
-        if (isAccelerating)
+        float accelSpeed = (200 + (20 * speedStat)) *(accelValue*0.75f+0.25f);
+        float decelSpeed = 200 + (20 * speedStat);
+        if (isAccelerating&&!isFinished)
         {
             if (speed < maxSpeed)
             {
-                float mult = speed < 200 ? 4 : 1;
+                float mult = speed < maxSpeed*0.25f ? 4 : 1;
                 //rb.AddRelativeForce(0, 0, accelSpeed);
                 speed += accelSpeed*Time.deltaTime*mult;
             }
         } else if (speed > 20)
         {
             //rb.AddRelativeForce(0, 0, -accelSpeed * 2);
-            speed -= accelSpeed * 2 * Time.deltaTime;
+            speed -= decelSpeed * Time.deltaTime * (1.25f+handlingStat*0.1f);
         } else if (speed < 0)
         {
             speed *= Mathf.Lerp(speed, 0, Time.deltaTime * 4);
@@ -202,8 +225,7 @@ public class CarController : MonoBehaviour
         //
 
         //turnSpeed = Mathf.Lerp(turnSpeed,isDrifting?0.1f:1,Time.deltaTime* (isDrifting?0.5f:6));
-        
-        if ((!isDrifting&& Mathf.Abs(h) < 0.03f) ||driftingCanEnd)
+        if (((!isDrifting&& Mathf.Abs(h) < 0.03f) ||driftingCanEnd)||isFinished)
         {
             rotation  = Mathf.Lerp(rotation,0,Time.deltaTime*10*(isDrifting?2:1));
             if (Mathf.Abs(rotation)<0.5f)
@@ -228,6 +250,10 @@ public class CarController : MonoBehaviour
         RaycastHit hit;
         Physics.Raycast(transform.position, -gravityDirection, out hit, height * fac, groundedLayerMask);
 
+        //Ground types
+        //
+        //
+
         Material material = TryGetMaterial(hit);
         if (material != null)
         {
@@ -246,7 +272,11 @@ public class CarController : MonoBehaviour
 
             if (material.name.ToLower().Contains("boost") && canGroundBoost)
             {
-                boostGroundMultiplier = 1;
+                boostGroundMultiplier = 0.75f;
+                if (speed<maxSpeed)
+                {
+                    speed = maxSpeed;
+                }
                 canGroundBoost = false;
             } else
             {
@@ -268,7 +298,7 @@ public class CarController : MonoBehaviour
 
         //Debug.Log($"Material: {(material!=null?material.name:"Null")}");
 
-        if (hit.collider!=null)
+        if (hit.collider!=null && !inJump)
         {
             if (gravityIntensity<0)
             {
@@ -281,7 +311,7 @@ public class CarController : MonoBehaviour
         } else
         {
             //float mult = 1;
-            if (Physics.Raycast(transform.position, -gravityDirection, height* 2f, groundedLayerMask))
+            if (Physics.Raycast(transform.position, -gravityDirection, height* 2f, groundedLayerMask) && !inJump)
             {
                 gravityIntensity = -1;
             }
@@ -357,8 +387,10 @@ public class CarController : MonoBehaviour
 
     static Mesh GetMesh(GameObject go) { if (go) { MeshFilter mf = go.GetComponent<MeshFilter>(); if (mf) { Mesh m = mf.sharedMesh; if (!m) { m = mf.mesh; } if (m) { return m; } } } return (Mesh)null; }
 
+    float lastJumpTime = 0;
     public void Jump(float intensity)
     {
+        lastJumpTime=Time.time;
         gravityIntensity = intensity;
     }
     List<Vector3> positions = new List<Vector3>();
@@ -395,12 +427,39 @@ public class CarController : MonoBehaviour
             speed *= 0.8f;
         }
     }
-
+    float ckptBuffer = 0;
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag=="Trigger")
         {
             other.GetComponent<Trigger>().OnTriggerActivate(this);
+        }
+        if (other.tag=="Checkpoint")
+        {
+            if (RaceManager.instance.checkpoints.Count>0 && RaceManager.instance.checkpoints[checkpointIndex]==other.gameObject)
+            {
+                checkpointIndex++;
+            }
+        }
+        if (other.tag=="Lap" && Time.time>ckptBuffer)
+        {
+            ckptBuffer = Time.time + 1;
+            if (checkpointIndex == RaceManager.instance.checkpoints.Count)
+            {
+                checkpointIndex = 0;
+                
+                if (lap == RaceManager.instance.laps-1)
+                {
+                    isFinished = true;
+                    rb.velocity = Vector3.zero;
+                    finishTime = Time.time - startTime;
+                    RaceManager.SubmitFinalTime(finishTime);
+                } else
+                {
+                    lap++;
+                }
+                    
+            }
         }
     }
 }
