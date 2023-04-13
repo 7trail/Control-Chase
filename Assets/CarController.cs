@@ -59,6 +59,7 @@ public class CarController : MonoBehaviour
     public bool isGrounded = true;
     public bool driftingCanEnd = true;
     public float driftAngle = 0;
+    public float health = 1;
     public bool canChangeRotation = false;
 
     public bool canGroundBoost = true;
@@ -86,6 +87,8 @@ public class CarController : MonoBehaviour
     void Update()
     {
 
+        if (health<=0) { return; }
+
         float fac = (1 + speed / maxSpeed);
 
         isGrounded = Physics.Raycast(transform.position, -gravityDirection, height * fac * 2f, groundedLayerMask);
@@ -102,7 +105,7 @@ public class CarController : MonoBehaviour
 
         //Drifting
 
-        if (Input.GetButtonDown("Fire2") && Mathf.Abs(h)>0.3f)
+        if (Input.GetButton("Fire2") && !isDrifting && Mathf.Abs(h)>0.3f)
         {
             isDrifting = true;
             driftingCanEnd = false;
@@ -122,8 +125,8 @@ public class CarController : MonoBehaviour
 
         if (isDrifting)
         {
-            float f = (h * (3f + 0.5f * handlingStat))*driftAngle;
-            if (f < 0)
+            float f = ((h) * (3f + 0.5f * handlingStat));
+            if ((h * driftAngle) < 0)
             {
                 f *= 0.75f;
             }
@@ -189,7 +192,7 @@ public class CarController : MonoBehaviour
             }
         } else
         {
-            rotation = Mathf.Clamp(turnDir*maxRotation * (isGrounded?1:0.25f), -maxRotation*(isDrifting?2:1), maxRotation * (isDrifting ? 2 : 1));
+            rotation = Mathf.Clamp(turnDir*maxRotation * (isGrounded?1.2f:0.25f), -maxRotation*(isDrifting?2:1), maxRotation * (isDrifting ? 2 : 1));
         }
         //totalRotation += rotation * Time.deltaTime;
         //if (totalRotation>720*7)
@@ -201,7 +204,6 @@ public class CarController : MonoBehaviour
         //Hover
         //
         //
-        
 
         RaycastHit hit;
         Physics.Raycast(transform.position, -gravityDirection, out hit, height * fac, groundedLayerMask);
@@ -229,6 +231,16 @@ public class CarController : MonoBehaviour
             } else
             {
                 canGroundBoost = true;
+            }
+
+            if (material.name.ToLower().Contains("bounce"))
+            {
+                Jump(10);
+            }
+
+            if (material.name.ToLower().Contains("heal"))
+            {
+                health = Mathf.Clamp(health+Time.deltaTime/2,0,1);
             }
         }
         currSpeedMult = Mathf.Lerp(currSpeedMult, groundSpeedMultiplier, Time.deltaTime * 3);
@@ -328,12 +340,17 @@ public class CarController : MonoBehaviour
 
     static Mesh GetMesh(GameObject go) { if (go) { MeshFilter mf = go.GetComponent<MeshFilter>(); if (mf) { Mesh m = mf.sharedMesh; if (!m) { m = mf.mesh; } if (m) { return m; } } } return (Mesh)null; }
 
+    public void Jump(float intensity)
+    {
+        gravityIntensity = intensity;
+    }
 
-private void OnCollisionEnter(Collision collision)
+    private void OnCollisionEnter(Collision collision)
     {
         if (collision.collider.tag == "Obstacle")
         {
             speed *= -0.25f;
+            health -= 0.01f;
             //rb.MovePosition(transform.position+transform.TransformDirection(-Vector3.forward));
         }
     }
@@ -342,6 +359,7 @@ private void OnCollisionEnter(Collision collision)
     {
         if (collision.collider.tag=="Obstacle")
         {
+            health -= 0.005f * Time.deltaTime;
             speed *= 0.8f;
         }
     }
