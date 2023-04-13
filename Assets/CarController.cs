@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class CarController : MonoBehaviour
@@ -7,6 +8,7 @@ public class CarController : MonoBehaviour
     public int bodyStat = 0;
     public int speedStat = 0;
     public int handlingStat = 0;
+    public int skillStat = -1;
     public float gravity = 24;
 
     public float height = 2;
@@ -46,6 +48,9 @@ public class CarController : MonoBehaviour
     public GameObject shipDisplay;
     public Camera camera;
 
+    [Header("Skills")]
+    public List<Skill> skills;
+
     [Header("Gameplay Variables")]
     public float speed = 0;
     public float groundSpeedMultiplier = 1;
@@ -58,6 +63,7 @@ public class CarController : MonoBehaviour
     public bool isDrifting = false;
     public bool isGrounded = true;
     public bool driftingCanEnd = true;
+    public bool canDrive = true;
     public float driftAngle = 0;
     public float health = 1;
     public bool canChangeRotation = false;
@@ -80,13 +86,19 @@ public class CarController : MonoBehaviour
     void Start()
     {
         Application.targetFrameRate = 60;
+        if (skillStat == -1)
+        {
+            bodyStat += 1;
+            speedStat += 1;
+            handlingStat += 1;
+        }
     }
     float rotation = 0;
     float turnDir = 0;
     // Update is called once per frame
     void Update()
     {
-
+        if (!canDrive) { return; }
         if (health<=0) { return; }
 
         float fac = (1 + speed / maxSpeed);
@@ -102,6 +114,19 @@ public class CarController : MonoBehaviour
 
         isAccelerating = Input.GetButton("Fire1");
         float h = Input.GetAxis("Horizontal");
+
+        //Skills
+
+        if (skillStat!=-1)
+        {
+            if (Input.GetButtonDown("Fire3"))
+            {
+                if (skills[skillStat].CheckFire())
+                {
+                    skills[skillStat].Activate();
+                }
+            }
+        }
 
         //Drifting
 
@@ -123,23 +148,23 @@ public class CarController : MonoBehaviour
             driftingCanEnd = true;
         }
 
-        if (isDrifting)
+        if (isDrifting && (!driftingCanEnd|| (h * driftAngle)>0.2))
         {
             float f = ((h) * (3f + 0.5f * handlingStat));
             if ((h * driftAngle) < 0)
             {
                 f *= 0.75f;
             }
-            if (Mathf.Abs(h)< 0.2f)
+            if (h*driftAngle>0.4f)
             {
-                f = driftAngle*2;
+                f += driftAngle;
             }
             if (driftAngle > 0)
             {
-                turnDir = Mathf.Clamp(turnDir + f * Time.deltaTime, 0.5f, 2.5f);
+                turnDir = Mathf.Clamp(turnDir + f * Time.deltaTime*4, 0.5f, 2.5f);
             } else
             {
-                turnDir = Mathf.Clamp(turnDir + f * Time.deltaTime, -2.5f, -0.5f);
+                turnDir = Mathf.Clamp(turnDir + f * Time.deltaTime * 4, -2.5f, -0.5f);
             }
         } else
         {
@@ -185,20 +210,15 @@ public class CarController : MonoBehaviour
             {
                 rotation = 0;
             }
-            if (driftingCanEnd && Mathf.Abs(rotation)<20)
+            if (driftingCanEnd && Mathf.Abs(rotation)<2)
             {
                 isDrifting = false;
                 driftingCanEnd = false;
             }
         } else
         {
-            rotation = Mathf.Clamp(turnDir*maxRotation * (isGrounded?1.2f:0.25f), -maxRotation*(isDrifting?2:1), maxRotation * (isDrifting ? 2 : 1));
+            rotation = Mathf.Clamp(turnDir*maxRotation * (isGrounded?1.2f:0.25f), -maxRotation*(isDrifting?fac+0.5f:1), maxRotation * (isDrifting ?fac+0.5f : 1));
         }
-        //totalRotation += rotation * Time.deltaTime;
-        //if (totalRotation>720*7)
-        //{
-        //    totalRotation -= 720*7;
-        //}
         shipModel.transform.Rotate(new Vector3(0, rotation, 0) * Time.deltaTime);
 
         //Hover
@@ -250,9 +270,6 @@ public class CarController : MonoBehaviour
 
         if (hit.collider!=null)
         {
-            //float mult = 1;
-            //gravityIntensity += gravity*Time.deltaTime*mult;
-            //gravityIntensity = -2;
             if (gravityIntensity<0)
             {
                 gravityIntensity /= 2;
@@ -271,7 +288,7 @@ public class CarController : MonoBehaviour
             gravityIntensity -= gravity*Time.deltaTime;
         }
 
-        //Gravity and rotation
+        //Gravity
 
         if (canChangeRotation)
         {
@@ -343,6 +360,21 @@ public class CarController : MonoBehaviour
     public void Jump(float intensity)
     {
         gravityIntensity = intensity;
+    }
+    List<Vector3> positions = new List<Vector3>();
+    void OnDrawGizmos()
+    {
+
+        Gizmos.color = Color.blue;
+        if (isDrifting)
+        {
+            positions.Add(transform.position);
+
+        }
+        foreach (Vector3 pos in positions)
+        {
+            Gizmos.DrawSphere(pos, 2f);
+        }
     }
 
     private void OnCollisionEnter(Collision collision)

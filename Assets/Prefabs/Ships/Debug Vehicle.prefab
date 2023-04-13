@@ -107,7 +107,7 @@ RectTransform:
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 25}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -529,6 +529,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11848e96369fc97429cf2b1812d5ba70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  car: {fileID: 2892879200682100970}
+  soundSrc: {fileID: 3174115257819198901}
+  rejectClip: {fileID: 8300000, guid: 400567110c49c3a4bbddd6226a9d773c, type: 3}
+  healthCost: 0.1
+  stillRunning: 0
 --- !u!1 &2658526343239103927
 GameObject:
   m_ObjectHideFlags: 0
@@ -613,6 +618,7 @@ MonoBehaviour:
   bodyStat: 0
   speedStat: 0
   handlingStat: 0
+  skillStat: -1
   gravity: 160
   height: 3
   groundedLayerMask:
@@ -624,6 +630,8 @@ MonoBehaviour:
   cameraAligner: {fileID: 2892879200447704718}
   shipDisplay: {fileID: 2892879199950697933}
   camera: {fileID: 2892879201094840213}
+  skills:
+  - {fileID: 889163575376151390}
   speed: 0
   groundSpeedMultiplier: 1
   boostGroundMultiplier: 0
@@ -633,6 +641,7 @@ MonoBehaviour:
   isDrifting: 0
   isGrounded: 1
   driftingCanEnd: 0
+  canDrive: 1
   driftAngle: 0
   health: 1
   canChangeRotation: 0
@@ -1408,7 +1417,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.2
   m_Pitch: 1
   Loop: 0
   Mute: 0

@@ -28,5 +28,9 @@ public class Skill : MonoBehaviour
     public virtual void Activate()
     {
         car.health -= healthCost;
+        if (car.health<0)
+        {
+            car.health = 0.01f;
+        }
     }
 }

@@ -12,5 +12,22 @@ public class BoostSkill : Skill
     public override void Activate()
     {
         base.Activate();
+        stillRunning = true;
+        StartCoroutine(BoostRoutine());
+    }
+
+    IEnumerator BoostRoutine()
+    {
+        
+        float time = Time.time + 1f;
+        while (Time.time< time)
+        {
+            if (car.boostGroundMultiplier < 1.5f)
+            {
+                car.boostGroundMultiplier += 3f*Time.deltaTime;
+            }
+            yield return null;
+        }
+        stillRunning = false;
     }
 }
