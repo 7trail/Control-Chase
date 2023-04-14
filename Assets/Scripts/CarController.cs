@@ -21,7 +21,7 @@ public class CarController : MonoBehaviour
     {
         get
         {
-            return baseRotation + (25 * handlingStat) * (isDrifting?2:1);
+            return baseRotation+ (25 * handlingStat);
         }
     }
 
@@ -72,6 +72,10 @@ public class CarController : MonoBehaviour
     public GameObject cameraAligner;
     public GameObject shipDisplay;
     public Camera camera;
+    public AudioSource audioSrc;
+    public TMPro.TextMeshProUGUI lapText;
+    public AudioClip lapSound;
+    public AudioClip[] hitSounds;
 
     [Header("Skills")]
     public List<Skill> skills;
@@ -126,11 +130,22 @@ public class CarController : MonoBehaviour
     }
     float rotation = 0;
     float turnDir = 0;
+
+    bool hasDied = false;
     // Update is called once per frame
     void Update()
     {
         if (!canDrive) { return; }
-        if (health<=0) { return; }
+        if (health<=0) { 
+            if (!hasDied && !isFinished)
+            {
+                hasDied = true;
+                RaceManager.instance.FinishWithDeath();
+            }
+            
+            return; 
+        
+        }
 
         float fac = (1 + speed / maxSpeed);
 
@@ -192,10 +207,10 @@ public class CarController : MonoBehaviour
             }
             if (driftAngle > 0)
             {
-                turnDir = Mathf.Clamp(turnDir + f * Time.deltaTime*4, 0.5f, 2.5f);
+                turnDir = Mathf.Clamp(turnDir + f * Time.deltaTime*4, 0.5f, 2f);
             } else
             {
-                turnDir = Mathf.Clamp(turnDir + f * Time.deltaTime * 4, -2.5f, -0.5f);
+                turnDir = Mathf.Clamp(turnDir + f * Time.deltaTime * 4, -2f, -0.5f);
             }
         } else
         {
@@ -248,7 +263,7 @@ public class CarController : MonoBehaviour
             }
         } else
         {
-            rotation = Mathf.Clamp(turnDir*maxRotation * (isGrounded?1.2f:0.25f), -maxRotation*(isDrifting?fac+0.5f:1), maxRotation * (isDrifting ?fac+0.5f : 1));
+            rotation = Mathf.Clamp(turnDir*maxRotation * (isGrounded?1.2f:0.25f) * (1+0.15f*handlingStat), -maxRotation*(isDrifting?fac+0.5f:1), maxRotation * (isDrifting ?fac+0.5f : 1));
         }
         shipModel.transform.Rotate(new Vector3(0, rotation, 0) * Time.deltaTime);
 
@@ -329,12 +344,14 @@ public class CarController : MonoBehaviour
 
         //Gravity
 
+        RaycastHit hit2 = new RaycastHit();
         if (canChangeRotation)
         {
-            Physics.Raycast(transform.position, -gravityDirection, out hit, height * fac * 5f, groundedLayerMask);
-            if (hit.collider != null && hit.normal!=gravityDirection) {
+            
+            Physics.Raycast(transform.position, -gravityDirection, out hit2, height * fac * 5f);
+            if (hit2.collider != null && hit2.collider.tag!="Obstacle" && hit2.normal!=gravityDirection) {
                 //lastSwitchTime = Time.time + 0.15f;
-                gravityDirection = hit.normal;//Vector3.Lerp(gravityDirection, hit.normal, Time.deltaTime*6);
+                gravityDirection = hit2.normal;//Vector3.Lerp(gravityDirection, hit.normal, Time.deltaTime*6);
                 //Debug.Log(gravityDirection);
             }
 
@@ -342,8 +359,13 @@ public class CarController : MonoBehaviour
 
         Quaternion q = Quaternion.FromToRotation(gravityAligner.transform.up, gravityDirection) * gravityAligner.transform.rotation;
         gravityAligner.transform.rotation = Quaternion.Lerp(gravityAligner.transform.rotation,q,Time.deltaTime*8);
+        if (hit2.collider!= null && hit2.distance > height*5 )
+        {
+            gravityAligner.transform.rotation = q;
+        }
+        //gravityAligner.transform.rotation = q;
         float scaleSpeed = 4;
-        if (Mathf.Abs(gravityAligner.transform.localEulerAngles.x-cameraAligner.transform.localEulerAngles.x)>25)
+        if (Mathf.Abs(gravityAligner.transform.localEulerAngles.x-cameraAligner.transform.localEulerAngles.x)>35)
         {
             scaleSpeed = 8;
         }
@@ -417,13 +439,33 @@ public class CarController : MonoBehaviour
             Gizmos.DrawSphere(pos, 2f);
         }
     }
+    Coroutine textRoutine;
+    public void DisplayText(string text)
+    {
+        if (this.lapText!=null)
+        {
+            if (textRoutine!=null)
+            {
+                StopCoroutine(textRoutine);
+            }
+            textRoutine = StartCoroutine(displayText(text));
+        }
+    }
+
+    IEnumerator displayText(string t)
+    {
+        lapText.text = t;
+        yield return new WaitForSeconds(2);
+        lapText.text = "";
+    }
 
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.collider.tag == "Obstacle")
         {
-            speed *= -0.25f;
-            health -= 0.01f;
+            speed *= -0.2f;
+            health -= 0.02f;
+            audioSrc.PlayOneShot(hitSounds[Random.Range(0, hitSounds.Length)]);
             //rb.MovePosition(transform.position+transform.TransformDirection(-Vector3.forward));
         }
     }
@@ -465,10 +507,20 @@ public class CarController : MonoBehaviour
                     RaceManager.instance.FinishGame(RaceManager.SubmitFinalTime(finishTime));
                 } else
                 {
+                    DisplayText("Lap");
+                    audioSrc.PlayOneShot(lapSound);
                     lap++;
-                }
-                    
+                    health = Mathf.Clamp(health + 0.25f, 0, maxHealth);
+                }       
             }
+        }
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.tag=="Bounds")
+        {
+            health = -1;
         }
     }
 }

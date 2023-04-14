@@ -6,6 +6,7 @@ using UnityEngine;
 public class ShipData : ScriptableObject
 {
     public List<string> shipNames;
+    public List<string> shipDescriptions;
     public List<GameObject> ships;
     public List<string> skillNames;
 }

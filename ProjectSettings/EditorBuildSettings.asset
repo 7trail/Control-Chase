@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Bootup.unity
+    guid: d7ef565a8905f6a45b1770d14b7d7fa6
+  - enabled: 1
     path: Assets/Scenes/Main Menu.unity
     guid: 990167bb5e8a72e42bd61564871c6870
   - enabled: 1
@@ -26,4 +29,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Gilded Cup 4.unity
     guid: 6c88605f329d57e438b199c05343d62a
+  - enabled: 1
+    path: Assets/Scenes/Night City 1.unity
+    guid: f8498d175e48f834ca616a13d534353c
+  - enabled: 1
+    path: Assets/Scenes/Night City 2.unity
+    guid: c004136740b0bf44cbfc0a6c9957a443
   m_configObjects: {}

@@ -55,6 +55,13 @@ public class RaceManager : MonoBehaviour
         UnityEngine.SceneManagement.SceneManager.LoadScene("Main Menu");
     }
 
+    IEnumerator DeathRoutine()
+    {
+        startText.text = "FAIL";
+        yield return new WaitForSeconds(3);
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Main Menu");
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -69,6 +76,11 @@ public class RaceManager : MonoBehaviour
     public void FinishGame(bool b)
     {
         StartCoroutine(EndRoutine(b));
+    }
+
+    public void FinishWithDeath()
+    {
+        StartCoroutine(DeathRoutine());
     }
 
     public static bool SubmitFinalTime(float time)

@@ -5,6 +5,7 @@ using UnityEngine;
 public class BoostSkill : Skill
 {
     public bool stillRunning = false;
+    public AudioClip boostClip;
     public override bool CanFire()
     {
         return base.CanFire() && !stillRunning;
@@ -14,6 +15,7 @@ public class BoostSkill : Skill
         base.Activate();
         stillRunning = true;
         StartCoroutine(BoostRoutine());
+        soundSrc.PlayOneShot(boostClip);
     }
 
     IEnumerator BoostRoutine()

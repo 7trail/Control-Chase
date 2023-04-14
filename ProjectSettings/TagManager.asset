@@ -8,6 +8,7 @@ TagManager:
   - Obstacle
   - Checkpoint
   - Lap
+  - Bounds
   layers:
   - Default
   - TransparentFX

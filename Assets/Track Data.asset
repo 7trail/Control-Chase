@@ -18,15 +18,21 @@ MonoBehaviour:
   - Gilded Cup 2
   - Gilded Cup 3
   - Gilded Cup 4
+  - Night City 1
+  - Night City 2
   trackImages:
   - {fileID: 21300000, guid: 3f19cebd7ae9e6447b44fd168d484fd1, type: 3}
   - {fileID: 21300000, guid: 2bc13358026a1ce43afc8320234d797e, type: 3}
   - {fileID: 21300000, guid: cd590b15289f16d47a60d10ece84e7d5, type: 3}
   - {fileID: 21300000, guid: 64ca7b04fa6ce754394665c69942d100, type: 3}
   - {fileID: 21300000, guid: b859cd39d37c61a488d64b818ab4710a, type: 3}
+  - {fileID: 21300000, guid: a06024aafaf9f1c4cbcb2cb7589ab591, type: 3}
+  - {fileID: 21300000, guid: c40c21c2ce121614a9228ce61d432d2c, type: 3}
   trackDescriptions:
   - Before you may walk, you must crawl.
   - A simple loop track.
   - A less simple loop track.
   - A track with sharp turns.
   - A long track with tons of twists and spirals.
+  - Even sharper turns. Lots of risk, lots of reward.
+  - A lengthy track with lots of straightaways.

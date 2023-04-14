@@ -16,10 +16,24 @@ MonoBehaviour:
   - Loser-Mobile
   - Lumen MK-1
   - Andromeda "Dawn"
+  - Lumen "Needle"
+  - HEF-T
+  - 2WINS
+  shipDescriptions:
+  - You have no skills and you're a loser!
+  - The primary racing vehicle from Lumen LLC.
+  - Andromeda Technology's recent innovation.
+  - Throwing all safety to the wind, Lumen has made the fastest commercially available
+    vehicle.
+  - Originally built for hauling cargo, this can take a punch.
+  - Built for solid speed and handling.
   ships:
   - {fileID: 6875588006893836714, guid: 9abc0354636bc254fb8cea401f47f488, type: 3}
   - {fileID: 242899223480143172, guid: ef19c6d1e339626428b0c9f9b7ff3642, type: 3}
   - {fileID: 779613088149081007, guid: 82eb61b775b24704ca19bb23c86c091a, type: 3}
+  - {fileID: 2203125836514306514, guid: 887bb4c39d2df9a4c9e7fb3922f06868, type: 3}
+  - {fileID: 1350801638344611492, guid: c40ac342d3810f94a85800e1e33364dc, type: 3}
+  - {fileID: 2530055849413481179, guid: 755ec3afa46d7c54693e68d277772f45, type: 3}
   skillNames:
   - Boost
   - Jump
