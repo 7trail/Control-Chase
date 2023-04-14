@@ -42,7 +42,9 @@ public class KeyBindController : MonoBehaviour
                 {
                     GameInputManager.SetKeyMap(this.currentKey.name, this.codes[i]);
                     this.awaiting.SetActive(false);
+                    this.currentKey.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = this.codes[i].ToString();
                     this.currentKey = null;
+                    
                 }
             }
         }
@@ -254,7 +256,20 @@ public static class GameInputManager
     };
 
     // Token: 0x040000F6 RID: 246
-    private static KeyCode[] defaults;
+    private static KeyCode[] defaults = new KeyCode[] {
+        KeyCode.Mouse0,
+        KeyCode.Joystick2Button0,
+        KeyCode.Joystick3Button0,
+        KeyCode.Joystick4Button0,
+        KeyCode.Mouse1,
+        KeyCode.Joystick2Button1,
+        KeyCode.Joystick3Button1,
+        KeyCode.Joystick4Button1,
+        KeyCode.Mouse2,
+        KeyCode.Joystick2Button2,
+        KeyCode.Joystick3Button2,
+        KeyCode.Joystick4Button2,
+    };
 
     // Token: 0x040000F7 RID: 247
     public static List<string> axes;
