@@ -49,6 +49,14 @@ public class CarController : MonoBehaviour
         }
     }
 
+    public float maxHealth
+    {
+        get
+        {
+            return 1 + (0.15f * bodyStat);
+        }
+    }
+
     public bool inJump
     {
         get
@@ -114,6 +122,7 @@ public class CarController : MonoBehaviour
             speedStat += 1;
             handlingStat += 1;
         }
+        health = maxHealth;
     }
     float rotation = 0;
     float turnDir = 0;
@@ -134,14 +143,14 @@ public class CarController : MonoBehaviour
 
         //Inputs
 
-        isAccelerating = Input.GetButton("Fire1");
+        isAccelerating = GameInputManager.GetKey("1-Fire1");
         float h = Input.GetAxis("Horizontal");
 
         //Skills
 
         if (skillStat!=-1)
         {
-            if (Input.GetButtonDown("Fire3"))
+            if (GameInputManager.GetKeyDown("1-Fire3"))
             {
                 if (skills[skillStat].CheckFire())
                 {
@@ -152,7 +161,7 @@ public class CarController : MonoBehaviour
 
         //Drifting
 
-        if (Input.GetButton("Fire2") && !isDrifting && Mathf.Abs(h)>0.3f && !isFinished)
+        if (GameInputManager.GetKey("1-Fire2") && !isDrifting && Mathf.Abs(h)>0.3f && !isFinished)
         {
             isDrifting = true;
             driftingCanEnd = false;
@@ -165,7 +174,7 @@ public class CarController : MonoBehaviour
             }
             //turnDir = driftAngle * 1.5f;
         }
-        if (Input.GetButtonUp("Fire2") && isDrifting)
+        if (GameInputManager.GetKeyUp("1-Fire2") && isDrifting)
         {
             driftingCanEnd = true;
         }
@@ -290,7 +299,7 @@ public class CarController : MonoBehaviour
 
             if (material.name.ToLower().Contains("heal"))
             {
-                health = Mathf.Clamp(health+Time.deltaTime/2,0,1);
+                health = Mathf.Clamp(health+Time.deltaTime/2,0,maxHealth);
             }
         }
         currSpeedMult = Mathf.Lerp(currSpeedMult, groundSpeedMultiplier, Time.deltaTime * 3);

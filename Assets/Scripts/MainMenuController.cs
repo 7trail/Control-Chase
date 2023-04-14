@@ -37,11 +37,12 @@ public class MainMenuController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        float h = Input.GetAxis("Horizontal");
         if (phase == 1)
         {
             if (canCycle)
             {
-                if (Input.GetAxis("Horizontal") < -0.3f)
+                if (h < -0.3f)
                 {
                     canCycle = false;
                     stageIndex--;
@@ -51,7 +52,7 @@ public class MainMenuController : MonoBehaviour
                     }
                     SetStage();
                 }
-                if (Input.GetAxis("Horizontal") > 0.3f)
+                if (h > 0.3f)
                 {
                     canCycle = false;
                     stageIndex = (stageIndex + 1) % trackData.trackNames.Count;
@@ -64,14 +65,14 @@ public class MainMenuController : MonoBehaviour
             }
         }
         if (phase == 0) {
-            if (Input.GetAxis("Horizontal") < -0.5f)
+            if (h < -0.5f)
             {
                 canCycle = false;
                 phase = -1;
                 mainText.gameObject.SetActive(false);
                 settingsMenu.SetActive(true);
             }
-            if (Input.GetAxis("Horizontal") > 0.5f)
+            if (h > 0.5f)
             {
                 canCycle = false;
                 phase = 1;
@@ -81,7 +82,7 @@ public class MainMenuController : MonoBehaviour
             
         }
 
-        if (Mathf.Abs(Input.GetAxis("Horizontal")) < 0.2f)
+        if (Mathf.Abs(h) < 0.2f)
         {
             canCycle = true;
         }

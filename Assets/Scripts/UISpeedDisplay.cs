@@ -19,7 +19,7 @@ public class UISpeedDisplay : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        slider.value = car.health;
+        slider.value = car.health/car.maxHealth;
         text.text = (car.finalSpeed*3).ToString("F0") + " u/s";
         lapText.text = "Lap " + (car.lap+1) + "/" + RaceManager.instance.laps;
         

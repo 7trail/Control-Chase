@@ -22,7 +22,7 @@ public class BoostSkill : Skill
         float time = Time.time + 1f;
         while (Time.time< time)
         {
-            if (car.boostGroundMultiplier < 1.5f)
+            if (car.boostGroundMultiplier < 1.2f)
             {
                 car.boostGroundMultiplier += 3f*Time.deltaTime;
             }

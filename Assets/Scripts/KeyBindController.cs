@@ -124,8 +124,8 @@ public static class GameInputManager
     // Token: 0x060000F4 RID: 244 RVA: 0x0000628C File Offset: 0x0000448C
     static GameInputManager()
     {
-        KeyCode[] array = new KeyCode[12];
-        GameInputManager.defaults = array;
+        //KeyCode[] array = new KeyCode[12];
+        //GameInputManager.defaults = array;
         GameInputManager.axes = new List<string>
         {
             "1-H",
@@ -233,6 +233,11 @@ public static class GameInputManager
     public static bool GetKey(string keyMap)
     {
         return Input.GetKey(GameInputManager.keyMapping[keyMap]);
+    }
+
+    public static bool GetKeyUp(string keyMap)
+    {
+        return Input.GetKeyUp(GameInputManager.keyMapping[keyMap]);
     }
 
     // Token: 0x040000F4 RID: 244

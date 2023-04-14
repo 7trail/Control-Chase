@@ -17,4 +17,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Tutorial.unity
     guid: 6b6eb47016d507b44b6a0491fb5d169e
+  - enabled: 1
+    path: Assets/Scenes/Gilded Cup 2.unity
+    guid: 66b66741d20674f4f98ef7af333d211a
+  - enabled: 1
+    path: Assets/Scenes/Gilded Cup 3.unity
+    guid: 10d7e05f12a4b1d449b0db1bc2d397c3
+  - enabled: 1
+    path: Assets/Scenes/Gilded Cup 4.unity
+    guid: 6c88605f329d57e438b199c05343d62a
   m_configObjects: {}
