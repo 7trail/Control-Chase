@@ -35,4 +35,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Night City 2.unity
     guid: c004136740b0bf44cbfc0a6c9957a443
+  - enabled: 1
+    path: Assets/Scenes/Crystal Cup 1.unity
+    guid: 7872524451ef5544db62f353bfc0ca87
   m_configObjects: {}

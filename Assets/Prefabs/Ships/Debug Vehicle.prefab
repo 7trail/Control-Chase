@@ -625,10 +625,13 @@ MonoBehaviour:
   bodyStat: 0
   speedStat: 0
   handlingStat: 0
+  accelerationStat: 0
   skillStat: -1
+  weight: 1000
   accelStat: 0
   gravity: 160
-  height: 3
+  height: 4
+  PlayerID: 1
   groundedLayerMask:
     serializedVersion: 2
     m_Bits: 55
