@@ -8,7 +8,9 @@ public class CarController : MonoBehaviour
     public int bodyStat = 0;
     public int speedStat = 0;
     public int handlingStat = 0;
+    public int accelerationStat = 0;
     public int skillStat = -1;
+    public int weight = 1000;
     public float accelStat = 0;
     public float gravity = 24;
 
@@ -17,11 +19,26 @@ public class CarController : MonoBehaviour
     public LayerMask groundedLayerMask;
 
     float baseRotation = 120;
+
+    public float weightMultiplier
+    {
+        get
+        {
+            return weight / 1000f;
+        }
+    }
+
+    public float GetWeightImpact(float multiplier)
+    {
+        return 1 + (weightMultiplier - 1) * multiplier;
+    }
+
+
     public float maxRotation
     {
         get
         {
-            return baseRotation+ (25 * handlingStat);
+            return (baseRotation+ (25 * handlingStat))/ weightMultiplier;
         }
     }
 
@@ -29,7 +46,7 @@ public class CarController : MonoBehaviour
     {
         get
         {
-            return 400 + (30 * speedStat) + (100*(1-accelValue));
+            return (400 + (30 * speedStat) + (100*(1-accelValue))) / GetWeightImpact(0.5f);
         }
     }
 
@@ -45,7 +62,7 @@ public class CarController : MonoBehaviour
     {
         get
         {
-            return Mathf.Pow(1 - accelStat,1.75f);
+            return (Mathf.Pow(1 - accelStat,1.75f)/weightMultiplier) * (1+accelerationStat*0.15f);
         }
     }
 
@@ -53,7 +70,7 @@ public class CarController : MonoBehaviour
     {
         get
         {
-            return 1 + (0.15f * bodyStat);
+            return (1 + (0.15f * bodyStat)) * weightMultiplier;
         }
     }
 
@@ -216,15 +233,11 @@ public class CarController : MonoBehaviour
         {
             turnDir = h;
         }
-
-
-        //speed = transform.InverseTransformDirection(rb.velocity).z;
-
         //Acceleration
         //
         //
         float accelSpeed = (200 + (20 * speedStat)) *(accelValue*0.75f+0.25f);
-        float decelSpeed = 200 + (20 * speedStat);
+        float decelSpeed = (200 + (20 * speedStat)) / weightMultiplier;
         if (isAccelerating&&!isFinished)
         {
             if (speed < maxSpeed)
@@ -283,7 +296,11 @@ public class CarController : MonoBehaviour
         {
             if (material.name.ToLower().Contains("slow"))
             {
-                groundSpeedMultiplier = 0.33f;
+                //groundSpeedMultiplier = 0.33f;
+                if (speed > maxSpeed*0.33f)
+                {
+                    speed -= decelSpeed * 4 * Time.deltaTime;
+                }
             }
             else if (material.name.ToLower().Contains("fast"))
             {
@@ -339,7 +356,7 @@ public class CarController : MonoBehaviour
             {
                 gravityIntensity = -1;
             }
-            gravityIntensity -= gravity*Time.deltaTime;
+            gravityIntensity -= gravity*weightMultiplier*Time.deltaTime;
         }
 
         //Gravity
@@ -424,21 +441,6 @@ public class CarController : MonoBehaviour
         lastJumpTime=Time.time;
         gravityIntensity = intensity;
     }
-    List<Vector3> positions = new List<Vector3>();
-    void OnDrawGizmos()
-    {
-
-        Gizmos.color = Color.blue;
-        if (isDrifting)
-        {
-            positions.Add(transform.position);
-
-        }
-        foreach (Vector3 pos in positions)
-        {
-            Gizmos.DrawSphere(pos, 2f);
-        }
-    }
     Coroutine textRoutine;
     public void DisplayText(string text)
     {
@@ -487,7 +489,7 @@ public class CarController : MonoBehaviour
         }
         if (other.tag=="Checkpoint")
         {
-            if (RaceManager.instance.checkpoints.Count>0 && RaceManager.instance.checkpoints[checkpointIndex]==other.gameObject)
+            if (checkpointIndex >= 0 && RaceManager.instance.checkpoints.Count>0 && RaceManager.instance.checkpoints[checkpointIndex]==other.gameObject)
             {
                 checkpointIndex++;
             }

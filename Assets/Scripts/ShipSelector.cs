@@ -16,6 +16,7 @@ public class ShipSelector : MonoBehaviour
     public GameObject ship=null;
 
     public TMPro.TextMeshProUGUI shipName;
+    public TMPro.TextMeshProUGUI shipDesc;
     public TMPro.TextMeshProUGUI shipStats;
     public TMPro.TextMeshProUGUI shipSkill;
     public TMPro.TextMeshProUGUI selectPhase;
@@ -23,22 +24,30 @@ public class ShipSelector : MonoBehaviour
 
     public Dictionary<int, string> letterScores = new Dictionary<int, string>()
     {
-        [0] = "E",
-        [1] = "D",
-        [2] = "C",
-        [3] = "B",
-        [4] = "A",
-        [5] = "S",
+        [0] = "D",
+        [1] = "C",
+        [2] = "B",
+        [3] = "A",
+        [4] = "S",
+        [5] = "SS",
         [6] = "X",
-        [-1] = "F",
-        [-2] = ":(",
+        [-1] = "E",
+        [-2] = "F",
+        [-3] = ":(",
+        [-4] = ":((",
+        [-5] = ":(((",
+        [-6] = ":((((",
+        [-7] = ":(((((",
+        [-8] = ":(((((("
     };
 
     CarController car;
     // Start is called before the first frame update
     void Start()
     {
-        
+        shipIndex = PlayerPrefs.GetInt($"Player{player}Vehicle", 0);
+        skillIndex = PlayerPrefs.GetInt($"Player{player}Skill", 0);
+        accel = PlayerPrefs.GetFloat($"Player{player}Accel", 0.5f);
     }
 
     bool canSwitch = true;
@@ -53,7 +62,7 @@ public class ShipSelector : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float h = Input.GetAxis("Horizontal");
+        float h = GameInputManager.GetAxis(player+"-H");
         if (h < -0.1f)
         {
             if (canSwitch)
@@ -113,7 +122,7 @@ public class ShipSelector : MonoBehaviour
             canSwitch = true;
         }
 
-        if (Input.GetButtonDown("Fire1"))
+        if (GameInputManager.GetKeyDown(player + "-Fire1"))
         {
             phase++;
             if (phase>2)
@@ -121,7 +130,7 @@ public class ShipSelector : MonoBehaviour
                 RaceManager.LoadGame();
             }
         }
-        if (Input.GetButtonDown("Fire2"))
+        if (GameInputManager.GetKeyDown(player + "-Fire2"))
         {
             phase--;
             if (phase<0)
@@ -136,7 +145,8 @@ public class ShipSelector : MonoBehaviour
 
         car = ships.ships[shipIndex].GetComponent<CarController>();
         shipName.text = ships.shipNames[shipIndex];
-        shipStats.text = "Speed: " + letterScores[car.speedStat+letterMod] + "\nHandling: " + letterScores[car.handlingStat + letterMod] + "\nBody: " + letterScores[car.bodyStat + letterMod];
+        shipDesc.text = ships.shipDescriptions[shipIndex];
+        shipStats.text = "Speed: " + letterScores[car.speedStat+letterMod] + "\nHandling: " + letterScores[car.handlingStat + letterMod] + "\nBody: " + letterScores[car.bodyStat + letterMod] + "\nBaseAccel: " + letterScores[car.accelerationStat + letterMod] + "\nWeight: " + car.weight+"kg";
         shipSkill.text = "Skill: " + (skillIndex == -1 ? "None" : ships.skillNames[skillIndex]);
         selectPhase.text = "Choose " + (new string[] { "Ship", "Skill", "Accel","DONE" })[phase];
         accelSlider.gameObject.SetActive(phase == 2);

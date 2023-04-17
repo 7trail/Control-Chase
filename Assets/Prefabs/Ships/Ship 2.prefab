@@ -30,8 +30,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6029078607196513527, guid: 9abc0354636bc254fb8cea401f47f488,
         type: 3}
+      propertyPath: weight
+      value: 950
+      objectReference: {fileID: 0}
+    - target: {fileID: 6029078607196513527, guid: 9abc0354636bc254fb8cea401f47f488,
+        type: 3}
       propertyPath: bodyStat
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6029078607196513527, guid: 9abc0354636bc254fb8cea401f47f488,
         type: 3}
@@ -41,6 +46,11 @@ PrefabInstance:
     - target: {fileID: 6029078607196513527, guid: 9abc0354636bc254fb8cea401f47f488,
         type: 3}
       propertyPath: handlingStat
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6029078607196513527, guid: 9abc0354636bc254fb8cea401f47f488,
+        type: 3}
+      propertyPath: accelerationStat
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6029078607515941782, guid: 9abc0354636bc254fb8cea401f47f488,
