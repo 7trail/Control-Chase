@@ -16,6 +16,9 @@ public class CarController : MonoBehaviour
 
     public float height = 2;
 
+
+    public int PlayerID = 1;
+
     public LayerMask groundedLayerMask;
 
     float baseRotation = 120;
@@ -38,7 +41,7 @@ public class CarController : MonoBehaviour
     {
         get
         {
-            return (baseRotation+ (25 * handlingStat))/ weightMultiplier;
+            return (baseRotation+ (10 * handlingStat))/ weightMultiplier;
         }
     }
 
@@ -159,20 +162,17 @@ public class CarController : MonoBehaviour
                 hasDied = true;
                 RaceManager.instance.FinishWithDeath();
             }
-            
             return; 
-        
         }
 
         float fac = (1 + speed / maxSpeed);
 
         isGrounded = Physics.Raycast(transform.position, -gravityDirection, height * fac * 2f, groundedLayerMask);
-        bool hittingForward = Physics.Raycast(transform.position, transform.forward, 50 * (speed / maxSpeed));
+        bool hittingForward = Physics.Raycast(transform.position, transform.forward, 25 * (speed / maxSpeed));
         if (hittingForward)
         {
             fac += 1.5f;
         }
-
         //Inputs
 
         isAccelerating = GameInputManager.GetKey("1-Fire1");
@@ -276,7 +276,7 @@ public class CarController : MonoBehaviour
             }
         } else
         {
-            rotation = Mathf.Clamp(turnDir*maxRotation * (isGrounded?1.2f:0.25f) * (1+0.15f*handlingStat), -maxRotation*(isDrifting?fac+0.5f:1), maxRotation * (isDrifting ?fac+0.5f : 1));
+            rotation = Mathf.Clamp(turnDir*maxRotation * (isGrounded?1.2f:0.25f) * (1+0.25f*handlingStat), -maxRotation*(isDrifting?fac+0.5f:1), maxRotation * (isDrifting ?fac+0.5f : 1));
         }
         shipModel.transform.Rotate(new Vector3(0, rotation, 0) * Time.deltaTime);
 
@@ -376,7 +376,7 @@ public class CarController : MonoBehaviour
 
         Quaternion q = Quaternion.FromToRotation(gravityAligner.transform.up, gravityDirection) * gravityAligner.transform.rotation;
         gravityAligner.transform.rotation = Quaternion.Lerp(gravityAligner.transform.rotation,q,Time.deltaTime*8);
-        if (hit2.collider!= null && hit2.distance > height*5 )
+        if (hittingForward||(hit2.collider!= null && hit2.distance > height*5))
         {
             gravityAligner.transform.rotation = q;
         }
