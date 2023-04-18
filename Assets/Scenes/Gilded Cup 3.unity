@@ -371,6 +371,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: RaceManager
       objectReference: {fileID: 0}
+    - target: {fileID: 8185468216285414654, guid: 8e6b41df197bc0d428daac2b147f1360,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 74.33
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8e6b41df197bc0d428daac2b147f1360, type: 3}
 --- !u!1 &1292394105

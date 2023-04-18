@@ -89,6 +89,7 @@ public class RaceManager : MonoBehaviour
         if (time>f)
         {
             PlayerPrefs.SetFloat("Record " + Track, time);
+            PlayerPrefs.Save();
             return true;
         }
         return false;

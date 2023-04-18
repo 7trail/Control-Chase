@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.09895495, g: 0.075209536, b: 0.25150856, a: 1}
+  m_IndirectSpecularColor: {r: 0.09895473, g: 0.07520949, b: 0.2515082, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -229,6 +229,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: RaceManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 8185468216285414654, guid: 8e6b41df197bc0d428daac2b147f1360,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 174.95
+      objectReference: {fileID: 0}
+    - target: {fileID: 8185468216285414654, guid: 8e6b41df197bc0d428daac2b147f1360,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 90.818
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8e6b41df197bc0d428daac2b147f1360, type: 3}
