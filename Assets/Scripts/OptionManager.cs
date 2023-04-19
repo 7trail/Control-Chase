@@ -29,7 +29,19 @@ public class OptionManager : MonoBehaviour
         {
             displayName= "Boostless",
             identitifer="NB",
-            description = "Removes all speed-based terrain from the track."
+            description = "Remove all speed-based terrain from the track?"
+        },
+        new Option()
+        {
+            displayName= "Long Race",
+            identitifer="LR",
+            description = "Double number of laps?"
+        },
+        new Option()
+        {
+            displayName= "Short Race",
+            identitifer="SR",
+            description = "Set total laps to one?"
         }
     };
     public static bool IsEnabledOption(string o)
@@ -76,10 +88,13 @@ public class OptionManager : MonoBehaviour
             {
                 if (obj.name.ToLower().Contains("track"))
                 {
+                    Material[] mats = new Material[obj.GetComponent<MeshRenderer>().materials.Length];
                     for(int i = 0; i < obj.GetComponent<MeshRenderer>().materials.Length; i++)
                     {
-                        obj.GetComponent<MeshRenderer>().materials[i] = materialOptionsRandomizer[Random.Range(0, materialOptionsRandomizer.Count)];
+                        mats[i] = materialOptionsRandomizer[Random.Range(0, materialOptionsRandomizer.Count)];
+                        //obj.GetComponent<MeshRenderer>().materials[i] = materialOptionsRandomizer[Random.Range(0, materialOptionsRandomizer.Count)];
                     }
+                    obj.GetComponent<MeshRenderer>().materials = mats;
                 }
             }
         }
@@ -88,15 +103,33 @@ public class OptionManager : MonoBehaviour
         {
             foreach (GameObject obj in FindObjectsOfType<GameObject>())
             {
+
                 if (obj.name.ToLower().Contains("track"))
                 {
+                    Material[] mats = new Material[obj.GetComponent<MeshRenderer>().materials.Length];
                     for (int i = 0; i < obj.GetComponent<MeshRenderer>().materials.Length; i++)
                     {
                         if (!materialOptionsBoostless.Contains(obj.GetComponent<MeshRenderer>().materials[i]))
-                            obj.GetComponent<MeshRenderer>().materials[i] = materialOptionsRandomizer[0];
+                            mats[i] = materialOptionsRandomizer[0];
+                        else
+                        {
+                            mats[i] = obj.GetComponent<MeshRenderer>().materials[i];
+                        }
+                        //obj.GetComponent<MeshRenderer>().materials[i] = materialOptionsRandomizer[Random.Range(0, materialOptionsRandomizer.Count)];
                     }
+                    obj.GetComponent<MeshRenderer>().materials = mats;
                 }
             }
+        }
+
+        if (IsEnabledOption("Long Race"))
+        {
+            RaceManager.instance.laps *= 2;
+        }
+
+        if (IsEnabledOption("Short Race"))
+        {
+            RaceManager.instance.laps = 1;
         }
     }
 

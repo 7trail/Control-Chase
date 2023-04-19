@@ -193,7 +193,7 @@ public class CarController : MonoBehaviour
 
         //Drifting
 
-        if (GameInputManager.GetKey("1-Fire2") && !isDrifting && Mathf.Abs(h)>0.3f && !isFinished)
+        if (GameInputManager.GetKey("1-Fire2") && isGrounded && !isDrifting && Mathf.Abs(h)>0.3f && !isFinished)
         {
             isDrifting = true;
             driftingCanEnd = false;
@@ -276,7 +276,7 @@ public class CarController : MonoBehaviour
             }
         } else
         {
-            rotation = Mathf.Clamp(turnDir*maxRotation * (isGrounded?1.2f:0.25f) * (1+0.25f*handlingStat), -maxRotation*(isDrifting?fac+0.5f:1), maxRotation * (isDrifting ?fac+0.5f : 1));
+            rotation = Mathf.Clamp(turnDir*maxRotation * (isGrounded?1.2f:0.15f) * (1+0.25f*handlingStat), -maxRotation*(isDrifting?fac+0.5f:1), maxRotation * (isDrifting ?fac+0.5f : 1));
         }
         shipModel.transform.Rotate(new Vector3(0, rotation, 0) * Time.deltaTime);
 
@@ -296,11 +296,7 @@ public class CarController : MonoBehaviour
         {
             if (material.name.ToLower().Contains("slow"))
             {
-                //groundSpeedMultiplier = 0.33f;
-                if (speed > maxSpeed*0.33f)
-                {
-                    speed -= decelSpeed * 4 * Time.deltaTime;
-                }
+                groundSpeedMultiplier = 0.33f;
             }
             else if (material.name.ToLower().Contains("fast"))
             {
@@ -326,7 +322,7 @@ public class CarController : MonoBehaviour
 
             if (material.name.ToLower().Contains("bounce"))
             {
-                Jump(10);
+                Jump(gravity);
             }
 
             if (material.name.ToLower().Contains("heal"))
