@@ -82,13 +82,16 @@ public class RaceManager : MonoBehaviour
     {
         StartCoroutine(DeathRoutine());
     }
-
+    public static string GetRecordString(string trackName)
+    {
+        return "Record " + trackName + "*MODS*" + OptionManager.GetActiveOptions();
+    }
     public static bool SubmitFinalTime(float time)
     {
-        float f = PlayerPrefs.GetFloat("Record " + Track,0.0f);
+        float f = PlayerPrefs.GetFloat(GetRecordString(Track), 0.0f);
         if (time>f)
         {
-            PlayerPrefs.SetFloat("Record " + Track, time);
+            PlayerPrefs.SetFloat(GetRecordString(Track), time);
             PlayerPrefs.Save();
             return true;
         }

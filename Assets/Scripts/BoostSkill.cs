@@ -24,7 +24,7 @@ public class BoostSkill : Skill
         float time = Time.time + 1f;
         while (Time.time< time)
         {
-            if (car.boostGroundMultiplier < 1.2f)
+            if (car.boostGroundMultiplier < 1.2f * (OptionManager.IsEnabledOption("Ultraspeed") ? 2 : 1))
             {
                 car.boostGroundMultiplier += 3f*Time.deltaTime;
             }

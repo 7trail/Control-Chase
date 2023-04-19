@@ -304,7 +304,7 @@ public class CarController : MonoBehaviour
             }
             else if (material.name.ToLower().Contains("fast"))
             {
-                groundSpeedMultiplier = 1.5f;
+                groundSpeedMultiplier = 1.5f * (OptionManager.IsEnabledOption("Ultraspeed")?2:1);
             }
             else
             {
@@ -313,7 +313,7 @@ public class CarController : MonoBehaviour
 
             if (material.name.ToLower().Contains("boost") && canGroundBoost)
             {
-                boostGroundMultiplier = 0.75f;
+                boostGroundMultiplier = 0.75f * (OptionManager.IsEnabledOption("Ultraspeed") ? 2 : 1);
                 if (speed<maxSpeed)
                 {
                     speed = maxSpeed;

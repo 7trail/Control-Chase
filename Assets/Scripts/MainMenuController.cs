@@ -7,13 +7,17 @@ public class MainMenuController : MonoBehaviour
 {
     public int phase = 0;
     public int stageIndex = 0;
+    public int optIndex = 0;
     public TextMeshProUGUI mainText;
+    public TextMeshProUGUI optionListText;
+    public TextMeshProUGUI optionDescText;
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI trackNameText;
     public TextMeshProUGUI trackDescText;
     public Image trackImg;
     public GameObject settingsMenu;
     public GameObject raceMenu;
+    public GameObject optionsMenu;
 
     public TrackData trackData;
 
@@ -29,7 +33,7 @@ public class MainMenuController : MonoBehaviour
     {
         RaceManager.Track = trackData.trackNames[stageIndex];
         trackNameText.text = trackData.trackNames[stageIndex];
-        scoreText.text ="High Score: "+UISpeedDisplay.FormatTime(PlayerPrefs.GetFloat("Record " + RaceManager.Track, 0.0f));
+        scoreText.text =$"High Score ({OptionManager.GetActiveOptions("/")}): "+UISpeedDisplay.FormatTime(PlayerPrefs.GetFloat(RaceManager.GetRecordString(RaceManager.Track), 0.0f));
         trackDescText.text = trackData.trackDescriptions[stageIndex];
         trackImg.sprite = trackData.trackImages[stageIndex];
         
@@ -38,6 +42,7 @@ public class MainMenuController : MonoBehaviour
     void Update()
     {
         float h = Input.GetAxis("Horizontal");
+        float v = Input.GetAxis("Vertical");
         if (phase == 1)
         {
             if (canCycle)
@@ -79,10 +84,53 @@ public class MainMenuController : MonoBehaviour
                 mainText.gameObject.SetActive(false);
                 raceMenu.SetActive(true);
             }
-            
+
+            if (v > 0.5f)
+            {
+                canCycle = false;
+                phase = 2;
+                optionsMenu.SetActive(true);
+                //mainText.gameObject.SetActive(false);
+                //raceMenu.SetActive(true);
+            }
+
         }
 
-        if (Mathf.Abs(h) < 0.2f)
+        if (phase == 2)
+        {
+            if (v > 0.5f && canCycle)
+            {
+                canCycle = false;
+                optIndex--;
+                if (optIndex<0)
+                {
+                    optIndex = OptionManager.options.Count-1;
+                }
+            }
+            if (v < -0.5f && canCycle)
+            {
+                canCycle = false;
+                optIndex++;
+                if (optIndex > OptionManager.options.Count-1)
+                {
+                    optIndex = 0;
+                }
+            }
+            optionListText.text = "";
+            int i = 0;
+            foreach(Option option in OptionManager.options)
+            {
+                optionListText.text += $"{option.displayName} ({option.identitifer}) - {(option.enabled ? "Enabled" : "Disabled")} {(i==optIndex?"<<":"")}\n";
+                i++;
+            }
+            optionDescText.text = OptionManager.options[optIndex].description;
+            if (GameInputManager.GetKeyDown("1-Fire1"))
+            {
+                OptionManager.options[optIndex].enabled = !OptionManager.options[optIndex].enabled;
+            }
+        }
+
+        if (Mathf.Abs(h) < 0.2f&& Mathf.Abs(v) < 0.2f)
         {
             canCycle = true;
         }
@@ -93,6 +141,7 @@ public class MainMenuController : MonoBehaviour
             mainText.gameObject.SetActive(true);
             settingsMenu.SetActive(false);
             raceMenu.SetActive(false);
+            optionsMenu.SetActive(false);
         }
     }
 }
