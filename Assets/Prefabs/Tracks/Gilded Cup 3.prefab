@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1116678168061230102}
   m_Layer: 0
-  m_Name: tracks (12)
+  m_Name: Gilded Cup 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -470,7 +470,7 @@ GameObject:
   - component: {fileID: 1116678169371596262}
   - component: {fileID: 1116678169371596281}
   m_Layer: 0
-  m_Name: Track 2 (1)
+  m_Name: Walls
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
