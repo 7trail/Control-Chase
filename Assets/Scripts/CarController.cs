@@ -240,7 +240,7 @@ public class CarController : MonoBehaviour
         float decelSpeed = (200 + (20 * speedStat)) / weightMultiplier;
         if (isAccelerating&&!isFinished)
         {
-            if (speed < maxSpeed)
+            if (speed < maxSpeed && isGrounded)
             {
                 float mult = speed < maxSpeed*0.25f ? 4 : 1;
                 //rb.AddRelativeForce(0, 0, accelSpeed);
@@ -250,6 +250,10 @@ public class CarController : MonoBehaviour
         {
             //rb.AddRelativeForce(0, 0, -accelSpeed * 2);
             speed -= decelSpeed * Time.deltaTime * (1.25f+handlingStat*0.1f);
+            if (speed<20)
+            {
+                speed = 20;
+            }
         } else if (speed < 0)
         {
             speed *= Mathf.Lerp(speed, 0, Time.deltaTime * 4);

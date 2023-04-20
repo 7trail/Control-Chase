@@ -6,9 +6,12 @@ public class RaceManager : MonoBehaviour
 {
     public TMPro.TextMeshProUGUI startText;
     public ShipData shipData;
+    public GameObject LapObject;
+    public OptionManager options;
 
     [Header("Track-Specific Data")]
     public List<GameObject> checkpoints = new List<GameObject>();
+    
     public int laps = 3;
 
     public static RaceManager instance;
@@ -21,8 +24,9 @@ public class RaceManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        options.Init();
         int playerIndex = PlayerPrefs.GetInt("Player1Vehicle", 0);
-        GameObject car = Instantiate(shipData.ships[playerIndex],Vector3.zero,Quaternion.identity);
+        GameObject car = Instantiate(shipData.ships[playerIndex],Vector3.zero,LapObject.transform.rotation);
         car.GetComponent<CarController>().canDrive = false;
         car.GetComponent<CarController>().skillStat = PlayerPrefs.GetInt("Player1Skill", -1);
         car.GetComponent<CarController>().accelStat = PlayerPrefs.GetFloat("Player1Accel", 0);

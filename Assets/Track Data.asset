@@ -22,6 +22,8 @@ MonoBehaviour:
   - Night City 2
   - Crystal Cup 1
   - Crystal Cup 2
+  - Crystal Cup 3
+  - Crystal Cup 4
   trackImages:
   - {fileID: 21300000, guid: 3f19cebd7ae9e6447b44fd168d484fd1, type: 3}
   - {fileID: 21300000, guid: 2bc13358026a1ce43afc8320234d797e, type: 3}
@@ -32,6 +34,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c40c21c2ce121614a9228ce61d432d2c, type: 3}
   - {fileID: 21300000, guid: 55d4d9de86a14c341b2a024dd794d15d, type: 3}
   - {fileID: 21300000, guid: b3a88ad1aedd6a04b8cabc5609f68763, type: 3}
+  - {fileID: 21300000, guid: 4a494e7d6ed7e5a498b70897a2f05e51, type: 3}
+  - {fileID: 21300000, guid: 50caeb9e866831a4c9823a102f0196b1, type: 3}
   trackDescriptions:
   - Before you may walk, you must crawl.
   - A simple loop track.
@@ -42,3 +46,5 @@ MonoBehaviour:
   - A lengthy track with lots of straightaways.
   - A figure-8. Who doesn't love figure-8s?
   - Another track with lots of sharp turns.
+  - A mix of elevations and sharp and wide turns.
+  - A straight-shot track, with lots of speed-ups.

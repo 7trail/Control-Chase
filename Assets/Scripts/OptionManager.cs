@@ -42,6 +42,12 @@ public class OptionManager : MonoBehaviour
             displayName= "Short Race",
             identitifer="SR",
             description = "Set total laps to one?"
+        },
+        new Option()
+        {
+            displayName= "Mirror",
+            identitifer="M",
+            description = "Reverse the track?"
         }
     };
     public static bool IsEnabledOption(string o)
@@ -66,10 +72,10 @@ public class OptionManager : MonoBehaviour
 
     public List<Material> materialOptionsRandomizer = new List<Material>();
     public List<Material> materialOptionsBoostless = new List<Material>();
-
+    public List<string> cannotMirror = new List<string>();
 
     // Start is called before the first frame update
-    void Start()
+    public void Init()
     {
         if (IsEnabledOption("No Walls?"))
         {
@@ -130,6 +136,14 @@ public class OptionManager : MonoBehaviour
         if (IsEnabledOption("Short Race"))
         {
             RaceManager.instance.laps = 1;
+        }
+
+        if (IsEnabledOption("Mirror"))
+        {
+            if (!cannotMirror.Contains(RaceManager.Track)) {
+                RaceManager.instance.checkpoints.Reverse();
+                RaceManager.instance.LapObject.transform.Rotate(0, 180, 0);
+            }
         }
     }
 
