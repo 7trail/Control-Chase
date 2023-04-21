@@ -47,4 +47,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Night City 3.unity
     guid: dcd710352205fad4987913d06dbb9a7b
+  - enabled: 1
+    path: Assets/Scenes/Night City 4.unity
+    guid: d04fefda4b5fa5c43aee00dcfda94cef
   m_configObjects: {}

@@ -116,7 +116,9 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 5f638cfb636b937428e804771d270993, type: 2}
   materialOptionsBoostless:
   - {fileID: 2100000, guid: a55828958e70acc47bc8d3af54a3afcb, type: 2}
-  cannotMirror: []
+  cannotMirror:
+  - Night City 2
+  - Tutorial
 --- !u!1 &1394305408028749474
 GameObject:
   m_ObjectHideFlags: 0

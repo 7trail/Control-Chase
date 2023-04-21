@@ -166,7 +166,7 @@ public class CarController : MonoBehaviour
             return; 
         }
 
-        float fac = (1 + speed / maxSpeed);
+        float fac = (1 + Mathf.Clamp(speed / maxSpeed,0,1.5f));
 
         isGrounded = Physics.Raycast(transform.position, -gravityDirection, height * fac * 2f, groundedLayerMask);
         bool hittingForward = Physics.Raycast(transform.position, transform.forward, 25 * (speed / maxSpeed));
@@ -515,9 +515,16 @@ public class CarController : MonoBehaviour
                     RaceManager.instance.FinishGame(RaceManager.SubmitFinalTime(finishTime));
                 } else
                 {
-                    DisplayText("Lap");
+                    
                     audioSrc.PlayOneShot(lapSound);
                     lap++;
+                    if (lap==1)
+                    {
+                        DisplayText("Skill OK");
+                    } else
+                    {
+                        DisplayText("Lap");
+                    }
                     health = Mathf.Clamp(health + 0.25f, 0, maxHealth);
                 }       
             }
