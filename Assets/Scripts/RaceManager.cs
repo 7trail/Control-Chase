@@ -93,7 +93,7 @@ public class RaceManager : MonoBehaviour
     public static bool SubmitFinalTime(float time)
     {
         float f = PlayerPrefs.GetFloat(GetRecordString(Track), 0.0f);
-        if (time>f)
+        if (time<f)
         {
             PlayerPrefs.SetFloat(GetRecordString(Track), time);
             PlayerPrefs.Save();

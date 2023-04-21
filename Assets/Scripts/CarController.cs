@@ -88,6 +88,7 @@ public class CarController : MonoBehaviour
     [Header("Object References")]
     public Rigidbody rb;
     public GameObject shipModel;
+    public GameObject hitObstacleEffect;
     public GameObject gravityAligner;
     public GameObject cameraAligner;
     public GameObject shipDisplay;
@@ -465,9 +466,14 @@ public class CarController : MonoBehaviour
     {
         if (collision.collider.tag == "Obstacle")
         {
-            speed *= -0.2f;
+            if (speed > 0)
+            {
+                speed *= -0.2f;
+            }
             health -= 0.02f;
             audioSrc.PlayOneShot(hitSounds[Random.Range(0, hitSounds.Length)]);
+            //transform.Translate(-transform.forward);
+            Instantiate(hitObstacleEffect, collision.contacts[0].point, transform.rotation);
             //rb.MovePosition(transform.position+transform.TransformDirection(-Vector3.forward));
         }
     }

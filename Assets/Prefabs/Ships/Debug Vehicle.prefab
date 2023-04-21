@@ -637,6 +637,8 @@ MonoBehaviour:
     m_Bits: 55
   rb: {fileID: 2892879200682100971}
   shipModel: {fileID: 2892879200937301894}
+  hitObstacleEffect: {fileID: 7884787402842209258, guid: 0ed4487f7c40327418555041d0e53252,
+    type: 3}
   gravityAligner: {fileID: 2892879201358213471}
   cameraAligner: {fileID: 2892879200447704718}
   shipDisplay: {fileID: 2892879199950697933}

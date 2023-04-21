@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 0
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -326,6 +326,42 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 135727343, guid: e40de8a7a2d6a2541b055ea068fee946, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 13.437301
+      objectReference: {fileID: 0}
+    - target: {fileID: 202696541, guid: e40de8a7a2d6a2541b055ea068fee946, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 46.8125
+      objectReference: {fileID: 0}
+    - target: {fileID: 202696541, guid: e40de8a7a2d6a2541b055ea068fee946, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 17.842201
+      objectReference: {fileID: 0}
+    - target: {fileID: 657626993, guid: e40de8a7a2d6a2541b055ea068fee946, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 42.427002
+      objectReference: {fileID: 0}
+    - target: {fileID: 657626993, guid: e40de8a7a2d6a2541b055ea068fee946, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 14.382296
+      objectReference: {fileID: 0}
+    - target: {fileID: 739836297, guid: e40de8a7a2d6a2541b055ea068fee946, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 22.542301
+      objectReference: {fileID: 0}
+    - target: {fileID: 913704883, guid: e40de8a7a2d6a2541b055ea068fee946, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 88.019585
+      objectReference: {fileID: 0}
+    - target: {fileID: 913704883, guid: e40de8a7a2d6a2541b055ea068fee946, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 75.82176
+      objectReference: {fileID: 0}
+    - target: {fileID: 913704883, guid: e40de8a7a2d6a2541b055ea068fee946, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 19.993792
+      objectReference: {fileID: 0}
     - target: {fileID: 5090128976642972972, guid: e40de8a7a2d6a2541b055ea068fee946,
         type: 3}
       propertyPath: m_Name
